@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Financial Platform</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>FinDash</h2>
+            </div>
+
+            <div class="section">
+                <h3>Companies</h3>
+                <ul id="company-list" class="company-list">
+                    <!-- Populated via JS -->
+                </ul>
+            </div>
+
+            <div class="section insights">
+                <h3>Market Insights</h3>
+                <div id="top-gainers" class="insight-box">
+                    <h4>Top Gainers</h4>
+                    <ul id="gainers-list"></ul>
+                </div>
+                <div id="top-losers" class="insight-box">
+                    <h4>Top Losers</h4>
+                    <ul id="losers-list"></ul>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header>
+                <h1 id="stock-title">Select a Company</h1>
+                <div class="controls">
+                    <label for="time-range">Time Range:</label>
+                    <select id="time-range">
+                        <option value="30">Last 30 Days</option>
+                        <option value="90">Last 90 Days</option>
+                        <option value="180">Last 180 Days</option>
+                    </select>
+
+                    <label for="compare-stock">Compare With:</label>
+                    <select id="compare-stock">
+                        <option value="">None</option>
+                        <!-- Populated via JS -->
+                    </select>
+                </div>
+            </header>
+
+            <!-- Key Metrics Cards -->
+            <div class="summary-cards" id="summary-cards">
+                <div class="card">
+                    <h4>Latest Close</h4>
+                    <p id="latest-close">--</p>
+                </div>
+                <div class="card">
+                    <h4>Avg Close</h4>
+                    <p id="avg-close">--</p>
+                </div>
+                <div class="card">
+                    <h4>52W High</h4>
+                    <p id="high-52w">--</p>
+                </div>
+                <div class="card">
+                    <h4>52W Low</h4>
+                    <p id="low-52w">--</p>
+                </div>
+                <div class="card">
+                    <h4>Volatility (30d)</h4>
+                    <p id="volatility">--</p>
+                </div>
+            </div>
+
+            <!-- Chart Area -->
+            <div class="chart-container">
+                <canvas id="stockChart"></canvas>
+            </div>
+
+            <div class="predictions-section">
+                <button id="predict-btn" class="btn primary">Predict Next 7 Days</button>
+                <div id="prediction-results" class="prediction-results" style="display:none;">
+                    <h4>7-Day Forecast (Linear Regression)</h4>
+                    <ul id="prediction-list"></ul>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

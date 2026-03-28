@@ -1,0 +1,7 @@
+node_modules/
+package-lock.json
+package.json
+uvicorn.log
+test_run.log
+backend/financial_data.db
+__pycache__/
