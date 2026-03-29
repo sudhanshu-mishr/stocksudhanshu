@@ -3,7 +3,7 @@ services:
     name: findash-app
     env: python
     buildCommand: pip install -r requirements.txt && cd frontend && npm ci && npm run build && cd .. && python backend/data_service.py
-    startCommand: uvicorn backend.app:app --host 0.0.0.0 --port $PORT
+    startCommand: python backend/app.py
     envVars:
       - key: PYTHON_VERSION
         value: 3.10.13
