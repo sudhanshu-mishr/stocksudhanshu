@@ -16,8 +16,5 @@ COPY . .
 # Ensure the database directory exists and initialize it with data
 RUN python backend/data_service.py
 
-# Expose the application port
-EXPOSE 8000
-
-# Command to run the application
-CMD ["uvicorn", "backend.app:app", "--host", "0.0.0.0", "--port", "8000"]
+# Command to run the application using $PORT env var (defaulting to 8000 if not set)
+CMD uvicorn backend.app:app --host 0.0.0.0 --port ${PORT:-8000}

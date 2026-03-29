@@ -80,3 +80,20 @@ The backend exposes several endpoints. When running the server, interactive API 
 - **Market Insights:** A dedicated section on the dashboard highlighting Top Gainers and Top Losers.
 - **Comparison Feature:** An endpoint and UI control allowing users to plot the normalized percentage change of two different stocks over time to directly compare relative performance.
 - **Predictive ML:** A basic linear regression model leveraging historical data indices to forecast upcoming closing prices.
+
+### Option 3: Deploy to Render ☁️
+
+This repository is ready to be deployed as a single Web Service on Render.
+
+**Using the Render Dashboard (Blueprint):**
+1. Fork or push this repository to GitHub.
+2. Log into Render and click **New+** -> **Blueprint**.
+3. Connect your repository. Render will automatically read the `render.yaml` file and configure the service (installing dependencies, running the data pipeline, and starting the uvicorn server).
+
+**Manual Setup on Render:**
+1. Create a new **Web Service**.
+2. Connect your repository.
+3. Set the Environment to `Python 3`.
+4. Set Build Command: `pip install -r requirements.txt && python backend/data_service.py`
+5. Set Start Command: `uvicorn backend.app:app --host 0.0.0.0 --port $PORT`
+6. Click Deploy!
