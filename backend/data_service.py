@@ -6,7 +6,7 @@ import numpy as np
 import time
 
 # Define a list of default symbols
-SYMBOLS = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA"]
+SYMBOLS = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "RELIANCE.NS", "TCS.NS", "INFY.NS", "HDFCBANK.NS"]
 
 # Database file path
 DB_PATH = "backend/financial_data.db"
