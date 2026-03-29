@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from 'react'
 import { ActionSearchBar, Action } from '@/components/ui/action-search-bar'
 import { BentoGrid, BentoItem } from '@/components/ui/bento-grid'
+import { LumaSpin } from '@/components/ui/luma-spin'
 import {
   TrendingUp,
   Activity,
@@ -8,7 +9,9 @@ import {
   DollarSign,
   AlertCircle,
   Clock,
-  Briefcase
+  Briefcase,
+  BookOpen,
+  X
 } from 'lucide-react'
 import {
   Chart as ChartJS,
@@ -37,6 +40,9 @@ ChartJS.register(
 const API_BASE = '/api'
 
 function App() {
+  const [isAppLoading, setIsAppLoading] = useState(true)
+  const [isDocsOpen, setIsDocsOpen] = useState(false)
+
   const [companies, setCompanies] = useState<string[]>([])
   const [selectedSymbol, setSelectedSymbol] = useState<string>('AAPL')
   const [summary, setSummary] = useState<any>(null)
@@ -45,6 +51,14 @@ function App() {
   const [timeRange, setTimeRange] = useState('30')
   const [prediction, setPrediction] = useState<any>(null)
   const [isPredicting, setIsPredicting] = useState(false)
+
+  // Loading Screen Delay
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsAppLoading(false)
+    }, 2000)
+    return () => clearTimeout(timer)
+  }, [])
 
   // API Calls
   useEffect(() => {
@@ -199,11 +213,20 @@ function App() {
     ]
   }, [summary, insights, selectedSymbol])
 
+  if (isAppLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center">
+        <LumaSpin />
+        <p className="mt-8 text-slate-500 font-medium tracking-wide animate-pulse">Initializing Platform...</p>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-200">
 
       {/* Header section with Search */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center gap-3">
@@ -216,7 +239,7 @@ function App() {
               </div>
             </div>
 
-            <div className="w-full max-w-lg mx-auto">
+            <div className="w-full max-w-lg mx-auto z-50">
                {searchActions.length > 0 && (
                  <ActionSearchBar
                     actions={searchActions}
@@ -235,13 +258,21 @@ function App() {
                 <option value="90">Last 90 Days</option>
                 <option value="180">Last 180 Days</option>
               </select>
+
+              <button
+                onClick={() => setIsDocsOpen(true)}
+                className="p-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                title="Documentation"
+              >
+                <BookOpen className="w-5 h-5" />
+              </button>
             </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 relative z-10">
 
         {/* Title */}
         <div className="flex items-center justify-between">
@@ -283,12 +314,12 @@ function App() {
         )}
 
         {/* Top Bento Grid */}
-        <div className="w-full">
+        <div className="w-full relative z-0">
            <BentoGrid items={bentoItems} />
         </div>
 
         {/* Chart Section */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/60">
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/60 relative z-0">
            <div className="flex items-center gap-2 mb-6">
               <Clock className="text-slate-400 w-5 h-5" />
               <h3 className="font-semibold text-slate-800">Historical Price Trend</h3>
@@ -330,6 +361,92 @@ function App() {
         </div>
 
       </main>
+
+      {/* Documentation Modal Overlay */}
+      {isDocsOpen && (
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
+            <div className="flex justify-between items-center p-6 border-b border-slate-100">
+              <div className="flex items-center gap-3">
+                <BookOpen className="text-blue-600 w-6 h-6" />
+                <h2 className="text-xl font-bold text-slate-900">Platform Documentation</h2>
+              </div>
+              <button
+                onClick={() => setIsDocsOpen(false)}
+                className="text-slate-400 hover:text-slate-600 hover:bg-slate-100 p-2 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-6 overflow-y-auto">
+              <div className="space-y-8">
+
+                <section>
+                  <h3 className="text-sm font-bold tracking-wider text-slate-400 uppercase mb-3">Tech Stack Overview</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                      <span className="font-semibold text-slate-800 block mb-1">Frontend</span>
+                      <span className="text-sm text-slate-600">React, TypeScript, Tailwind CSS, shadcn/ui, Chart.js</span>
+                    </div>
+                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                      <span className="font-semibold text-slate-800 block mb-1">Backend</span>
+                      <span className="text-sm text-slate-600">FastAPI, Python, SQLite, Uvicorn</span>
+                    </div>
+                  </div>
+                </section>
+
+                <section>
+                  <h3 className="text-sm font-bold tracking-wider text-slate-400 uppercase mb-3">Data Engineering</h3>
+                  <p className="text-sm text-slate-600 leading-relaxed mb-3">
+                    Our Python background service leverages <code className="bg-slate-100 px-1 py-0.5 rounded text-blue-600">yfinance</code> to ingest 1 year of historical data for US and Indian Equities.
+                    Missing values are imputed using Pandas via forward/backward filling algorithms.
+                  </p>
+                  <ul className="text-sm text-slate-600 space-y-2 list-disc list-inside ml-2">
+                    <li><strong className="text-slate-800">Volatility Score:</strong> A 30-day rolling standard deviation metric calculated to track relative risk.</li>
+                    <li><strong className="text-slate-800">Moving Averages:</strong> Extrapolated 7-Day MA data streams injected into the SQLite datastore.</li>
+                  </ul>
+                </section>
+
+                <section>
+                  <h3 className="text-sm font-bold tracking-wider text-slate-400 uppercase mb-3">Machine Learning</h3>
+                  <p className="text-sm text-slate-600 leading-relaxed">
+                    The <strong>7-Day Forecast</strong> uses <code className="bg-slate-100 px-1 py-0.5 rounded text-blue-600">scikit-learn</code>'s <code>LinearRegression</code> module.
+                    It trains a model on the fly utilizing the latest 60-day price trend of the selected asset to extrapolate short-term future support/resistance trajectories.
+                  </p>
+                </section>
+
+                <section>
+                  <h3 className="text-sm font-bold tracking-wider text-slate-400 uppercase mb-3">Core API Endpoints</h3>
+                  <div className="space-y-3">
+                    <div className="bg-slate-50 px-4 py-3 rounded-lg border border-slate-100 flex items-center justify-between">
+                      <code className="text-sm font-mono text-emerald-600">GET /api/data/{'{symbol}'}</code>
+                      <span className="text-xs text-slate-500 font-medium">Historical OHLCV</span>
+                    </div>
+                    <div className="bg-slate-50 px-4 py-3 rounded-lg border border-slate-100 flex items-center justify-between">
+                      <code className="text-sm font-mono text-emerald-600">GET /api/summary/{'{symbol}'}</code>
+                      <span className="text-xs text-slate-500 font-medium">Aggregated Metrics</span>
+                    </div>
+                    <div className="bg-slate-50 px-4 py-3 rounded-lg border border-slate-100 flex items-center justify-between">
+                      <code className="text-sm font-mono text-emerald-600">GET /api/predict/{'{symbol}'}</code>
+                      <span className="text-xs text-slate-500 font-medium">ML Inference</span>
+                    </div>
+                  </div>
+                </section>
+
+              </div>
+            </div>
+            <div className="p-6 border-t border-slate-100 bg-slate-50 flex justify-end">
+              <button
+                onClick={() => setIsDocsOpen(false)}
+                className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors shadow-sm"
+              >
+                Close Documentation
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }
