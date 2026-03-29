@@ -28,6 +28,16 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+# Ensure static files directory exists to prevent FastAPI crash during Render build cache
+
+os.makedirs("frontend/dist/assets", exist_ok=True)
+
+if not os.path.exists("frontend/dist/index.html"):
+
+    with open("frontend/dist/index.html", "w") as f:
+
+        f.write("<!DOCTYPE html><html><body><h1>Frontend Building...</h1></body></html>")
+
 # Mount static files (Frontend)
 app.mount("/assets", StaticFiles(directory="frontend/dist/assets"), name="assets")
 
