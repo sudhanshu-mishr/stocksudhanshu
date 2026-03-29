@@ -2,7 +2,7 @@ services:
   - type: web
     name: findash-app
     env: python
-    buildCommand: pip install -r requirements.txt && cd frontend && npm ci && npm run build && cd .. && python backend/data_service.py
+    buildCommand: pip install -r requirements.txt && cd frontend && npm install && npm run build && cd .. && python backend/data_service.py
     startCommand: python backend/app.py
     envVars:
       - key: PYTHON_VERSION
